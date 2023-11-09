@@ -138,7 +138,7 @@ public class SeletedPokemon : MonoBehaviour
         if (EnemyHPSlider.value == 1)
         {
             BoardText.fontSize = 60;
-            BoardText.text = "니 승리";
+            BoardText.text = "승리 하였습니다";
         }
         
     }
