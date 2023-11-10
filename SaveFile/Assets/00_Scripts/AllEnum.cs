@@ -7,5 +7,13 @@ public class AllEnum //Enum만 담아두는 클래스...밖에서 Enum접근을 원활하게 하기 
         물,
 
         END
-    }    
+    }
+    public enum ItemType
+    { 
+        Potion,
+        Sword,
+        Armor,
+
+        End
+    }
 }

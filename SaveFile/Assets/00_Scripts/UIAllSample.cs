@@ -1,27 +1,15 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UIElements;
-using Button = UnityEngine.UI.Button;
-using Image = UnityEngine.UI.Image;
-using Slider = UnityEngine.UI.Slider;
-using Toggle = UnityEngine.UI.Toggle;
 
 public class UIAllSample : MonoBehaviour
 {
-    public ScrollView scollview;
-    public Image[] image;
-    public Dropdown dropdwon;
-    public GameObject newprefab;
-
-    public Sprite[] sprites;
-    private List<GameObject> imgobj = new List<GameObject>();
-    public Button[] button; //ë‚´ê°€ ì›í•˜ëŠ” ë²„íŠ¼ë“¤ì„ ì—°ê²° ì‹œì¼œë‘ .   
+    #region ÀÌÀü¿¡ ÁøÇàÇÑ ³»¿ëµé
+    public Button[] button; //³»°¡ ¿øÇÏ´Â ¹öÆ°µéÀ» ¿¬°á ½ÃÄÑµÒ.   
     //public Toggle toggle;
-    public Toggle[] toggles;
+    public Toggle[] toggles; //¶óµğ¿À¹öÆ° ±â´É ±¸ÇöÇÏ´À¶ó°í
+    //ÇÑ3°³Âë µé°íÀÖÀ½..
 
     public InputField inputfield;
     public Slider slider;
@@ -29,122 +17,150 @@ public class UIAllSample : MonoBehaviour
 
     Coroutine cor = null;
 
-    public GameObject buttonPrefab; //ì›ë³¸ í”„ë¦¬íŒ¹
+    public GameObject buttonPrefab; //¿øº» ÇÁ¸®ÆÕ
     public Transform Tr;
-    public Transform Tr2;
+    #endregion
+    public Dropdown dropdown;
+    public Transform contents; //½ºÅ©·Ñ¹öÆ°À» »ı¼ºÇØ¼­ ¹Ø¿¡ ´Ş¾ÆÁÙ ºÎ¸ğ Transform
+    public GameObject scrollContentsPrefab; //½ºÅ©·Ñ ÄÁÅÙÃ÷ ¹Ø¿¡ ºÙÀÏ ¹öÆ°
+    public Dictionary<AllEnum.ItemType, List<Button>> allScrollContents = new Dictionary<AllEnum.ItemType, List<Button>>();
+
+    //¾ÆÀÌÅÛ... »óÁ¡¿¡¼­ ÇÊÅÍ´©¸£¸é ÇØ´ç ¾ÆÀÌÅÛ¸¸ º¸ÀÌ°í.. »óÁ¡¿¡¼­ ¾ÆÀÌÅÛ Å¬¸¯À» ÇÏ¸é ÇØ´ç ¹¹ ±¸¸ÅÁøÇà.. 
+
+
+
+    public Sprite[] sprites; //ÇØ´ç ½ºÅ©·Ñ¿¡ ¸¸µç ¹öÆ°ÀÇ ÀÌ¹ÌÁö¸¦ ±³Ã¼ÇÒ ¸®¼Ò½º
+
+    //public Scrollbar scrollbar;//ÀÌ°Å´Â ½ºÅ©·Ñ¹Ù.. ½ºÅ©·Ñ ¹æÇâ ¹Ù²åÀ»‹š½èÀ½...
+
+    //Dictionary<AllEnum.ItemType, Item> itemDic = new Dictionary<AllEnum.ItemType, Item>();    
+
+    
+
     void Start()
     {
-        GameObject obj = Instantiate(buttonPrefab, Tr); //        
-        obj.GetComponent<Button>().onClick.AddListener(ButtonClick);
+        #region ÀÌÀü¿¡ ÁøÇàÇÑ ³»¿ëµé
+        //GameObject obj = Instantiate(buttonPrefab, Tr); //        
+        //obj.GetComponent<Button>().onClick.AddListener(ButtonClick);
 
+        //button[0].onClick.AddListener(ButtonClick);//        
 
-
-        button[0].onClick.AddListener(ButtonClick);//        
-
-        //string inputval = inputfield.text;
-        slider.maxValue = hp;
+        ////string inputval = inputfield.text;
+        //slider.maxValue = hp;
+        #endregion
+                
+        dropdown.ClearOptions(); //µå¶ø´Ù¿î¿¡ ºÙ¾îÀÖ´ø ¿É¼ÇµéÀ» ½Ï Áö¿öÁÜ.
         
-        GameObject makeprefab = Instantiate(newprefab,Tr2);
-        makeprefab.GetComponent<Image>().sprite = sprites[0] ;
-        imgobj.Add(makeprefab);
-        
-        makeprefab = Instantiate(newprefab,Tr2);
-        makeprefab.GetComponent<Image>().sprite = sprites[1] ;
-        imgobj.Add(makeprefab);
-        makeprefab = Instantiate(newprefab,Tr2);
-        makeprefab.GetComponent<Image>().sprite = sprites[2] ;
-        imgobj.Add(makeprefab);
-    }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.DownArrow)) //ì•„ë˜ë°©í–¥í‚¤
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>(); //µå¶ø´Ù¿î¿¡ Ãß°¡ÇÒ ¿É¼Ç º¯¼ö ¼±¾ğ
+        GameObject tmp;
+
+        options.Add(new Dropdown.OptionData("ÀüÃ¼¼±ÅÃ", null)); //°¡Àå Ã¹ ¿ä¼Ò·Î ÀüÃ¼¼±ÅÃ Ãß°¡
+
+        for (int i = 0; i < (int)AllEnum.ItemType.End; i++)
         {
-            hp -= 10;
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow)) //ìœ„ ë°©í–¥í‚¤
-        {
-            hp += 10;
-        }
-        slider.value = hp;
+            options.Add(new Dropdown.OptionData("Á©¸®"+(i+1),sprites[i])); //µå¶ø´Ù¿î ¿É¼Ç¿ë
 
+            allScrollContents.Add((AllEnum.ItemType)i, new List<Button>()); //½ºÅ©·Ñµñ¼Å³Ê¸®...¿¡ 
+            for (int j = 0; j< 2; j++)
+            {
+               tmp= Instantiate(scrollContentsPrefab, contents); //½ºÅ©·Ñ ¾È¿¡ µé¾î°¥ ÄÁÅÙÃ÷ ¹öÆ°À» »ı¼ºÇÏ°í,
+                                                                 //ÇØ´ç ¹öÆ°À» contentsÀÇ transform¹Ø¿¡ ÀÚ½ÄÀ¸·Î ¹Ğ¾î³ÖÀ½
+                allScrollContents[(AllEnum.ItemType)i].Add( tmp.GetComponent<Button>());
+                tmp.GetComponent<Image>().sprite = sprites[i];
+            }
+        }
         
-        
+        dropdown.AddOptions(options); //µå¶ø´Ù¿î¿¡ ³»°¡ ¼³Á¤ÇÑ ¿É¼ÇµéÀ» ´õÇÔ.
+
+        dropdown.onValueChanged.AddListener(
+            delegate { SelectDropdown(/*dropdown.value*/dropdown); }); //µå¶ø´Ù¿îÀ» Å¬¸¯ÇßÀ»¶§ ±â´Éµµ Ãß°¡.
+
+
+        dropdown.captionText.text = "Á©¸®¼±ÅÃ";//
+        //contents.GetComponent<RectTransform>().localPosition
+
+        contents.GetComponent<RectTransform>().sizeDelta = new Vector2(100/*¹öÆ°Å©±â*/ * 6/*¹öÆ° °³¼ö*/+ 10/*°£°İ Å©±â*/*5 /*¹öÆ°°³¼ö-1*/,
+            
+            contents.GetComponent<RectTransform>().sizeDelta.y); //ÄÁÅÙÃ÷ÀÇ °¡·Î ¼¼·Î Å©±â¸¦ Á¤ÇØÁÜ.
+
+        //scrollbar.value = 1;
+        SelectDropdown(dropdown); //½ÃÀÛÇÏÀÚ¸¶ÀÚ ½ÇÇà½ÃÄÑÁÖ±â
     }
-    /*
-     *public GameObject buttonPrefab; //ì›ë³¸ í”„ë¦¬íŒ¹
-    public Transform Tr;
-    void Start()
+
+    #region ÀÌÀü¿¡ ÁøÇàÇÑ ³»¿ëµé
+    //void Update()
+    //{        
+    //if (Input.GetKeyDown(KeyCode.DownArrow)) //¾Æ·¡¹æÇâÅ°
+    //{
+    //    hp -= 10;
+    //}
+    //else if (Input.GetKeyDown(KeyCode.UpArrow)) //À§ ¹æÇâÅ°
+    //{
+    //    hp += 10;
+    //}
+    //slider.value = hp;        
+    //}
+    #endregion
+
+    public void ScrollVec()
     {
-        GameObject obj = Instantiate(buttonPrefab, Tr); //        
-        obj.GetComponent<Button>().onClick.AddListener(ButtonClick);
-
-
-
-        button[0].onClick.AddListener(ButtonClick);//        
-
-        //string inputval = inputfield.text;
-        slider.maxValue = hp;
-
-        
+        Debug.Log("aaaa");
     }
-     * 
-     */
+
+    public void SelectDropdown(/*int val*/ Dropdown down)
+    {        
+        if (down.value == 0) //ÀüÃ¼¼±ÅÃ ¹öÆ°ÀÌ¶ó¸é
+        {
+            foreach (var item in allScrollContents)
+            {
+                for (int i = 0; i < item.Value.Count; i++)
+                {
+                    item.Value[i].gameObject.SetActive(true);
+                }
+            }
+            return;
+        }
+
+        int val = down.value - 1;
+        foreach (var item in allScrollContents)
+        {
+            for (int i = 0; i < item.Value.Count; i++)
+            {
+                item.Value[i].gameObject.SetActive(item.Key == (AllEnum.ItemType)val ? true : false);
+            }
+        }
+    }
 
     public void GetInputField()
     {
-        Debug.Log("ì‚¬ìš©ìê°€ ì…ë ¥í•œ ë‚´ìš© : "+inputfield.text);
-    }
-
-    public void ImgArrClick()
-    {
-        
-        
-        // Debug.Log("dropdwon.value"+dropdwon.value);
-        for (int i = 0; i < imgobj.Count; i++)
-        {
-            
-            if (i == dropdwon.value)
-            {
-                imgobj[i].SetActive(true);
-                
-            }
-            else
-            {
-                imgobj[i].SetActive(false);
-            }
-        }
-        // for (int i = 0; i <= dropdwon.l; i++)
-        // {
-        //     Debug.Log($"dropdwon.Length : {dropdwon.Length}");
-        //     image[i].gameObject.SetActive(true);
-        // }
+        Debug.Log("»ç¿ëÀÚ°¡ ÀÔ·ÂÇÑ ³»¿ë : "+inputfield.text);
     }
 
     public void ToggleClick()
     {
-        //Debug.Log(toggle.isOn? "í† ê¸€ì´ ì²´í¬ëœ ìƒíƒœ " : "í† ê¸€ì´ ì²´í¬ í•´ì œëœ ìƒíƒœ");
+        //Debug.Log(toggle.isOn? "Åä±ÛÀÌ Ã¼Å©µÈ »óÅÂ " : "Åä±ÛÀÌ Ã¼Å© ÇØÁ¦µÈ »óÅÂ");
         for (int i = 0; i < toggles.Length; i++)
         {
-            Debug.Log(toggles[i].isOn?  $"{i}ë²ˆì§¸ í† ê¸€ì´ ëˆŒë ¤ìˆìŠµë‹ˆë‹¤" : $"{i}ë²ˆì§¸ í† ê¸€ í•´ì œìƒíƒœ" );
+            Debug.Log(toggles[i].isOn?  $"{i}¹øÂ° Åä±ÛÀÌ ´­·ÁÀÖ½À´Ï´Ù" : $"{i}¹øÂ° Åä±Û ÇØÁ¦»óÅÂ" );
         }
     }
 
-    public void ButtonClick() //ë²„íŠ¼ì— ì—°ê²°ì‹œì¼œì¤„ ê¸°ëŠ¥.
+    public void ButtonClick() //¹öÆ°¿¡ ¿¬°á½ÃÄÑÁÙ ±â´É.
     {
-        Debug.Log("ë²„íŠ¼ì´ í´ë¦­ëê³  ë§¤ê°œë³€ìˆ˜ ì—†ëŠ” í•¨ìˆ˜" );
+        Debug.Log("¹öÆ°ÀÌ Å¬¸¯µÆ°í ¸Å°³º¯¼ö ¾ø´Â ÇÔ¼ö" );
     }
-    public void ButtonClick(string a) //ë²„íŠ¼ì— ì—°ê²°ì‹œì¼œì¤„ ê¸°ëŠ¥.
+    public void ButtonClick(string a) //¹öÆ°¿¡ ¿¬°á½ÃÄÑÁÙ ±â´É.
     {
-        Debug.Log("ë²„íŠ¼ì´ í´ë¦­ëê³  ë§¤ê°œë³€ìˆ˜ë¡œ " + a + "ê°€ ë“¤ì–´ì™”ìŒ");
+        Debug.Log("¹öÆ°ÀÌ Å¬¸¯µÆ°í ¸Å°³º¯¼ö·Î " + a + "°¡ µé¾î¿ÔÀ½");
 
-        //ì½”ë£¨í‹´ ì‹¤í–‰
+        //ÄÚ·çÆ¾ ½ÇÇà
         if (cor == null)
         {
             loop = true;
             cor = StartCoroutine(CoroutineName(10));
         }
 
-        //ì½”ë£¨í‹´ ë©ˆì¶”ê¸°
+        //ÄÚ·çÆ¾ ¸ØÃß±â
         loop = false;
         StopCoroutine( cor);
         cor = null;
@@ -152,14 +168,14 @@ public class UIAllSample : MonoBehaviour
 
     bool loop = true;
 
-    IEnumerator CoroutineName(int val /*í•„ìš”í•˜ë‹¤ë©´ ë§¤ê°œë³€ìˆ˜ ê°€ëŠ¥*/)
+    IEnumerator CoroutineName(int val /*ÇÊ¿äÇÏ´Ù¸é ¸Å°³º¯¼ö °¡´É*/)
     {
         int i = 0;
         while (loop)
         {
-            Debug.Log("ì½”ë£¨í‹´ ë¶ˆë¦¼");
-            yield return new WaitForSeconds(1f); //1ì´ˆ í›„ì— ë­˜ í• ìˆ˜ì‡ìŒ..
-            Debug.Log("ì½”ë£¨í‹´ 1ì´ˆí›„ ");            
+            Debug.Log("ÄÚ·çÆ¾ ºÒ¸²");
+            yield return new WaitForSeconds(1f); //1ÃÊ ÈÄ¿¡ ¹» ÇÒ¼öÀÕÀ½..
+            Debug.Log("ÄÚ·çÆ¾ 1ÃÊÈÄ ");            
         }        
 
         cor = null;
