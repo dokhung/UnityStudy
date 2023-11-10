@@ -1,161 +1,81 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ShapesScript : MonoBehaviour
 {
-    public Toggle toggleSprite1;
-    public Toggle toggleSprite2;
-    public Toggle toggleSprite3;
-    public Toggle toggleColor1;
-    public Toggle toggleColor2;
-    public Toggle toggleColor3;
-    public SpriteRenderer spren1;
-    public SpriteRenderer spren2;
-    public SpriteRenderer spren3;
+    Transform RadioGroupTr;
+    
+    [SerializeField]
+    Toggle[] shapesArr; //¸ð¾ç ¼±ÅÃ ÇÏ´Â ¶óµð¿À Åä±Û ¹è¿­
+
+
+    Transform ToggleGroupTr;
+
+    [SerializeField]
+    Toggle[] colorArr; //»ö ¼±ÅÃ ÇÏ´Â Åä±Û ¹è¿­
+
+    Transform SpriteRenderersTr;
+
+    [SerializeField]
+    SpriteRenderer[] spriteRendrers;
+
     public Slider slider;
-    private float min = 0;
-    private float max = 1;
 
-    private Color color;
+    Color color;
 
-    public Slider HPslider;
-    
-    
+    void Start()
+    {        
+        RadioGroupTr = GameObject.Find("RadioGroup").transform;
+        shapesArr = RadioGroupTr.GetComponentsInChildren<Toggle>();
 
-    public void Start()
-    {
-        // spren.color = Color.red + Color.blue;
-        // spren.color = new Color(1, 1, 1, 1);
+        ToggleGroupTr = GameObject.Find("ToggleGroup").transform;
+        colorArr = ToggleGroupTr.GetComponentsInChildren<Toggle>();
+
+        SpriteRenderersTr = GameObject.Find("SpriteRenderers").transform;
+        spriteRendrers = SpriteRenderersTr.GetComponentsInChildren<SpriteRenderer>();
+
+        for (int i = 0; i < colorArr.Length; i++)
+        {
+            colorArr[i].isOn = false;
+        }        
+        slider.value = 1;
+        color = new Color(0, 0, 0, 1);
+
+        ClickToggle_Shape();
+        ClickToggle_Color();
+        Slider_Alpha();
     }
 
-    
-
-    public void ClickedToggle()
+    public void ClickToggle_Shape() //µµÇü¸¸ ¼³Á¤ÇÔ...
     {
-        
-        
-        // if (toggle.isOn)
-        // {
-        //     Debug.Log("í† ê¸€ì´ ì„ íƒë˜ì—ˆìŒ");
-        // }
-        // else
-        // {
-        //     Debug.Log("í† ê¸€ì´ í•´ì œ ë˜ì—ˆìŒ");
-        // }
-
-        #region ë¹¨ê°•
-        if (toggleSprite1.isOn && toggleColor1.isOn)
+        for (int i = 0; i < shapesArr.Length; i++)
         {
-            Debug.Log("ë¹¨ê°•ìœ¼ë¡œ ìƒ‰ìƒ ë³€ê²½");
-            spren1.color = Color.red;
-            spren1.gameObject.SetActive(true);
+            spriteRendrers[i].gameObject.SetActive(shapesArr[i].isOn);
         }
-        
-
-        
-        
-        else if (toggleSprite2.isOn && toggleColor1.isOn)
-        {
-            Debug.Log("ë¹¨ê°•ìœ¼ë¡œ ìƒ‰ìƒ ë³€ê²½");
-            spren2.color = Color.red;
-            spren2.gameObject.SetActive(true);
-        }
-        
-        
-        
-        
-        else if (toggleSprite3.isOn && toggleColor1.isOn)
-        {
-            Debug.Log("ë¹¨ê°•ìœ¼ë¡œ ìƒ‰ìƒ ë³€ê²½");
-            spren3.color = Color.red;
-            spren3.gameObject.SetActive(true);
-        }
-        
-        
-        
-        
-        #endregion
-
-        #region ì´ˆë¡
-        else if (toggleSprite1.isOn && toggleColor2.isOn)
-        {
-            Debug.Log("ì´ˆë¡ìƒ‰ ìƒ‰ìƒ ë³€ê²½");
-            spren1.color = Color.green;
-            spren1.gameObject.SetActive(true);
-        }
-        
-
-        
-        
-        else if (toggleSprite2.isOn && toggleColor2.isOn)
-        {
-            Debug.Log("ì´ˆë¡ìƒ‰ ìƒ‰ìƒ ë³€ê²½");
-            spren2.color = Color.green;
-            spren2.gameObject.SetActive(true);
-        }
-        
-        
-        
-        
-        else if (toggleSprite3.isOn && toggleColor2.isOn)
-        {
-            Debug.Log("ì´ˆë¡ìƒ‰ ìƒ‰ìƒ ë³€ê²½");
-            spren3.color = Color.green;
-            spren3.gameObject.SetActive(true);
-        }
-        
-        
-        
-        #endregion
-
-        #region íŒŒëž‘
-        else if (toggleSprite1.isOn && toggleColor3.isOn)
-        {
-            Debug.Log("íŒŒëž€ìƒ‰ ìƒ‰ìƒ ë³€ê²½");
-            spren1.color = Color.blue;
-            spren1.gameObject.SetActive(true);
-        }
-        
-
-        
-        
-        else if (toggleSprite2.isOn && toggleColor3.isOn)
-        {
-            Debug.Log("íŒŒëž€ìƒ‰ ìƒ‰ìƒ ë³€ê²½");
-            spren2.color = Color.blue;
-            spren2.gameObject.SetActive(true);
-        }
-        
-        
-        
-        
-        else if (toggleSprite3.isOn && toggleColor3.isOn)
-        {
-            Debug.Log("íŒŒëž€ìƒ‰ ìƒ‰ìƒ ë³€ê²½");
-            color.r = 0;
-            color.g = 0;
-            color.b = 1;
-            spren3.color = color;//Color.blue;
-            spren3.gameObject.SetActive(true);
-            
-        }
-        
-        #endregion
-
-        
-        
     }
 
-    public void SliderColorChanged()
+    public void ClickToggle_Color() //»ö»ó °ª¸¸ ¼³Á¤ÇÔ
+    {
+        //»ö ¼¼ÆÃ
+        color.r = colorArr[0].isOn ? 1f : 0f;
+        color.g = colorArr[1].isOn ? 1f : 0f;
+        color.b = colorArr[2].isOn ? 1f : 0f;        
+                
+        for (int i = 0; i < spriteRendrers.Length; i++)
+        {
+            spriteRendrers[i].color = color; //½ÇÁ¦ »ö ¹Ý¿µ
+        }        
+    }
+
+    public void Slider_Alpha() //¾ËÆÄ°ª¸¸ ¼öÁ¤ÇÔ
     {
         color.a = slider.value;
-       Debug.Log(slider.value);
-
-       
-       spren3.color = color;
+        
+        for (int i = 0; i < spriteRendrers.Length; i++)
+        {
+            spriteRendrers[i].color = color;
+        }                
     }
 }

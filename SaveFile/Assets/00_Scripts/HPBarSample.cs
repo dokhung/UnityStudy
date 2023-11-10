@@ -1,137 +1,137 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
-// using UnityEngine.UI;
-//
-// public class HPBarSample : MonoBehaviour
-// {
-//     #region HPBar ì‹¤ìŠµ
-//     public Slider slider; //hp barì¸ê²ƒì´ê³ 
-//
-//     public int MaxHP = 100;//ì „ì²´ í”¼í†µ
-//     int HP = 100;
-//     public int Damage = 10; //í”¼ê²©ë‹¹í•  ë°ë¯¸ì§€
-//     #endregion
-//
-//     public Image[] coolImg; //ì¿¨íƒ€ì„ ì´ë¯¸ì§€
-//         
-//     //[SerializeField]  //[ìœ ë‹ˆí‹°ì—ì„œ ì œê³µí•˜ëŠ” ê¸°ëŠ¥]   ì´ë ‡ê²Œ ì‚¬ìš©í•˜ëŠ” ê²ƒì„ Attributeë¼ê³  í•©ë‹ˆë‹¤. 
-//     public float[] skillCooltime = new float[3] {0,0,0};
-//
-//     Coroutine[] coolCor = new Coroutine[3];
-//
-//     void Start()
-//     {
-//         HP = MaxHP; //ë‚˜ì˜ í˜„ì¬ í”¼í†µì„ ì „ì²´ í”¼í†µìœ¼ë¡œ ì„¸íŒ….
-//         slider.maxValue = MaxHP;
-//         slider.value = MaxHP;
-//
-//         for (int i = 0; i < coolCor.Length; i++)
-//         {
-//             coolCor[i] = null;
-//             coolImg[i].fillAmount = 0;
-//         }        
-//     }
-//
-//     void Update() //input.getkeyì¢…ë¥˜ëŠ” Updateì—ì„œ í•´ì•¼ ê±°ì˜ ì •í™•í•˜ë‹¤...
-//     {
-//         #region HPBarê´€ë ¨
-//         if (Input.GetKeyDown(KeyCode.Space)) //ìŠ¤í˜ì´ìŠ¤ê°€ ëˆŒë¦°ë‹¤ë©´
-//         {
-//             HP -= Damage; //ë‚˜ì˜ í˜„ì¬ ì²´ë ¥ damageë¡œ ê¹ê¸°
-//             slider.value = HP; //ìŠ¬ë¼ì´ë”ì™€ ë‚˜ì˜ í˜„ì¬ ì²´ë ¥ì„ ë™ì¼í•˜ê²Œ í•¨.
-//         }
-//         else if (Input.GetKeyDown(KeyCode.KeypadPlus)) //ì˜¤ë¥¸ìª½ í‚¤íŒ¨ë“œ í”ŒëŸ¬ìŠ¤ë¥¼ ëˆ„ë¥´ë©´ ìŠ¹ê¸‰?í•œë‹¤ê³  ì¹©ì‹œë‹¤.
-//             //ìŠ¹ê¸‰í•˜ë©´ í”¼ê°€ 100 ì¦ê°€í•¨.
-//         {
-//             MaxHP += 100;
-//             slider.maxValue = MaxHP;
-//             HP += 100;
-//             slider.value = HP;
-//         }
-//         #endregion 
-//
-//         //Debug.Log("í•œí”„ë ˆì„ë‹¹ ì‹œê°„ ì²´í¬ :  " + Time.deltaTime);
-//         //Debug.Log("í•œ fixedupdate ë‹¹ ì‹œê°„ :  " + Time.fixedDeltaTime);
-//         if (Input.GetKeyDown(KeyCode.Alpha1))
-//         {
-//             if (coolCor[0]==null)
-//             {
-//                 coolCor[0] = StartCoroutine(Cooltime(0));
-//             }            
-//         }
-//         else if (Input.GetKeyDown(KeyCode.Alpha2))
-//         {
-//             if (coolCor[1] == null)
-//             {
-//                 coolCor[1] = StartCoroutine(Cooltime(1));
-//             }
-//         }
-//         else if (Input.GetKeyDown(KeyCode.Alpha3))
-//         {
-//             if (coolCor[2] == null)
-//             {
-//                 coolCor[2] = StartCoroutine(Cooltime(2));
-//             }
-//         }
-//
-//         //Input.GetKeyDown //ë‚´ê°€ í‚¤ë¥¼ ëˆ„ë¥¸ í•œë²ˆ
-//         //Input.GetKeyup //ë‚´ê°€ í‚¤ë¥¼ ëˆŒë €ë‹¤ê°€ ë—ì„ë•Œ í•œë²ˆ
-//         //Input.GetKey //ëˆ„ë¥¸ì´ìƒ ê³„ì†... 2~3í”„ë ˆì„ë™ì•ˆ ë³´í†µ ëˆ„ë¥´ê³ ìˆê¸°ë•Œë¬¸ì—..
-//         ////ìµœì†Œ 2~3ë²ˆì”©ì€ ë¶ˆë ¤ìš”..
-//
-//         //Input.GetMouseButtonDown(0) //ì™¼ìª½í´ë¦­
-//         //Input.GetMouseButtonDown(1) //ì™¼ìª½í´ë¦­
-//         //Input.GetMouseButtonDown(2) //íœ í´ë¦­
-//
-//         //KeyCode.Keypad1 //ë°©í–¥í‘œ ì˜¤ë¥¸í¸ì— ìˆëŠ” ìˆ«ì íŒ¨ë“œí‚¤ëŠ” í‚¤íŒ¨ë“œ(ìˆ«ì)
-//         //    ìíŒ ìœ„ì—, ê¸€ìì™€ f1~12 ì‚¬ì´ì— ìˆëŠ” ìˆ«ìí‚¤ë“¤ì€ Alphaìˆ«ì
-//     }
-//
-//     //void FixedUpdate()//ì¼ì •ì‹œê°„ë§ˆë‹¤ ì‹œí–‰. ì¶©ëŒì²´í¬ ê°™ì€ ê²ƒ ì²˜ë¦¬ì— ì¢‹ìŒ.
-//     //{        
-//     //}
-//
-//     //void LateUpdate() //ëª¨ë“  ì—…ë°ì´íŠ¸ê°€ ëë‚˜ê³  ì‹œí–‰. ì¹´ë©”ë¼ì´ë™.. ê°™ì€ê³³ì— ìì£¼ ì“°ì„..
-//     //{        
-//     //}
-//
-//     IEnumerator Cooltime(int num)
-//     {
-//         coolImg[num].fillAmount = 1;
-//         float time = 0;
-//         float val = 0;
-//         while (coolImg[num].fillAmount > 0)
-//         {
-//             time += Time.fixedDeltaTime;//fixedupdateë¥¼ ì‹¤í–‰í•˜ëŠ” ì‹œê°„.
-//             //Time.deltaTime; //updateí•œë²ˆ ì‹œí–‰í• ë•Œë§ˆë‹¤ ê±¸ë¦¬ëŠ” ì‹œê°„
-//             val = skillCooltime[num] - time;
-//             coolImg[num].fillAmount = val / skillCooltime[num];
-//             yield return new WaitForFixedUpdate();
-//         }
-//         coolCor[num] = null;
-//     }
-//
-//     //ì¿¨íƒ€ì„ì´ 1ì´ˆë¼ê³  í• ë–„
-//     //ì—†ìœ¼ë©´ 0 ìˆìœ¼ë©´ 1ì´ê³ 
-//     //ì¿¨íƒ€ì„ë„ 1ì´ë©´
-//     //ê·¸ëƒ¥ ë‚´ê°€ ë­”ê°€ ì¿¨íƒ€ì„ì´ ì¦ê°€~~~í•˜ë‹¤ê°€ 1ì´ ë˜ë©´ ë
-//
-//     //float time = 0;
-//     //time +=Time.fixedDeltaTime;//0.02
-//     //fillamount = time;
-//
-//     //ì¿¨íƒ€ì„ì´ 2ì´ˆë¼ê³  í• ë–„
-//     //ì—†ìœ¼ë©´ 0ì´ê³  ì´ê²ƒë„ ë‹¤ ì°¨ë©´ 1
-//
-//     //ì¿¨íƒ€ì„ 2: fillamountì˜ ëì€ 1  = ì‹¤ì œ ì§€ë‚œì‹œê°„ 1 : fillamountì˜ í˜„ì¬ ê°’ì€ X
-//
-//
-//     //float time = 0;
-//     //time +=Time.fixedDeltaTime;//0.02
-//     //fillamount = time / ì¿¨íƒ€ì„;
-//
-//     //ì¿¨íƒ€ì„ : 1 = time : X    == 0.5
-//
-//     //(1 x1 )/2 == 0.5
-// }
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class HPBarSample : MonoBehaviour
+{
+    #region HPBar ½Ç½À
+    public Slider slider; //hp barÀÎ°ÍÀÌ°í
+
+    public int MaxHP = 100;//ÀüÃ¼ ÇÇÅë
+    int HP = 100;
+    public int Damage = 10; //ÇÇ°İ´çÇÒ µ¥¹ÌÁö
+    #endregion
+
+    public Image[] coolImg; //ÄğÅ¸ÀÓ ÀÌ¹ÌÁö
+        
+    //[SerializeField]  //[À¯´ÏÆ¼¿¡¼­ Á¦°øÇÏ´Â ±â´É]   ÀÌ·¸°Ô »ç¿ëÇÏ´Â °ÍÀ» Attribute¶ó°í ÇÕ´Ï´Ù. 
+    public float[] skillCooltime = new float[3] {0,0,0};
+
+    Coroutine[] coolCor = new Coroutine[3];
+
+    void Start()
+    {
+        HP = MaxHP; //³ªÀÇ ÇöÀç ÇÇÅëÀ» ÀüÃ¼ ÇÇÅëÀ¸·Î ¼¼ÆÃ.
+        slider.maxValue = MaxHP;
+        slider.value = MaxHP;
+
+        for (int i = 0; i < coolCor.Length; i++)
+        {
+            coolCor[i] = null;
+            coolImg[i].fillAmount = 0;
+        }        
+    }
+
+    void Update() //input.getkeyÁ¾·ù´Â Update¿¡¼­ ÇØ¾ß °ÅÀÇ Á¤È®ÇÏ´Ù...
+    {
+        #region HPBar°ü·Ã
+        if (Input.GetKeyDown(KeyCode.Space)) //½ºÆäÀÌ½º°¡ ´­¸°´Ù¸é
+        {
+            HP -= Damage; //³ªÀÇ ÇöÀç Ã¼·Â damage·Î ±ğ±â
+            slider.value = HP; //½½¶óÀÌ´õ¿Í ³ªÀÇ ÇöÀç Ã¼·ÂÀ» µ¿ÀÏÇÏ°Ô ÇÔ.
+        }
+        else if (Input.GetKeyDown(KeyCode.KeypadPlus)) //¿À¸¥ÂÊ Å°ÆĞµå ÇÃ·¯½º¸¦ ´©¸£¸é ½Â±Ş?ÇÑ´Ù°í Ä¨½Ã´Ù.
+            //½Â±ŞÇÏ¸é ÇÇ°¡ 100 Áõ°¡ÇÔ.
+        {
+            MaxHP += 100;
+            slider.maxValue = MaxHP;
+            HP += 100;
+            slider.value = HP;
+        }
+        #endregion 
+
+        //Debug.Log("ÇÑÇÁ·¹ÀÓ´ç ½Ã°£ Ã¼Å© :  " + Time.deltaTime);
+        //Debug.Log("ÇÑ fixedupdate ´ç ½Ã°£ :  " + Time.fixedDeltaTime);
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (coolCor[0]==null)
+            {
+                coolCor[0] = StartCoroutine(Cooltime(0));
+            }            
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            if (coolCor[1] == null)
+            {
+                coolCor[1] = StartCoroutine(Cooltime(1));
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (coolCor[2] == null)
+            {
+                coolCor[2] = StartCoroutine(Cooltime(2));
+            }
+        }
+
+        //Input.GetKeyDown //³»°¡ Å°¸¦ ´©¸¥ ÇÑ¹ø
+        //Input.GetKeyup //³»°¡ Å°¸¦ ´­·¶´Ù°¡ ¶ÃÀ»¶§ ÇÑ¹ø
+        //Input.GetKey //´©¸¥ÀÌ»ó °è¼Ó... 2~3ÇÁ·¹ÀÓµ¿¾È º¸Åë ´©¸£°íÀÖ±â¶§¹®¿¡..
+        ////ÃÖ¼Ò 2~3¹ø¾¿Àº ºÒ·Á¿ä..
+
+        //Input.GetMouseButtonDown(0) //¿ŞÂÊÅ¬¸¯
+        //Input.GetMouseButtonDown(1) //¿ŞÂÊÅ¬¸¯
+        //Input.GetMouseButtonDown(2) //ÈÙÅ¬¸¯
+
+        //KeyCode.Keypad1 //¹æÇâÇ¥ ¿À¸¥Æí¿¡ ÀÖ´Â ¼ıÀÚ ÆĞµåÅ°´Â Å°ÆĞµå(¼ıÀÚ)
+        //    ÀÚÆÇ À§¿¡, ±ÛÀÚ¿Í f1~12 »çÀÌ¿¡ ÀÖ´Â ¼ıÀÚÅ°µéÀº Alpha¼ıÀÚ
+    }
+
+    //void FixedUpdate()//ÀÏÁ¤½Ã°£¸¶´Ù ½ÃÇà. Ãæµ¹Ã¼Å© °°Àº °Í Ã³¸®¿¡ ÁÁÀ½.
+    //{        
+    //}
+
+    //void LateUpdate() //¸ğµç ¾÷µ¥ÀÌÆ®°¡ ³¡³ª°í ½ÃÇà. Ä«¸Ş¶óÀÌµ¿.. °°Àº°÷¿¡ ÀÚÁÖ ¾²ÀÓ..
+    //{        
+    //}
+
+    IEnumerator Cooltime(int num)
+    {
+        coolImg[num].fillAmount = 1;
+        float time = 0;
+        float val = 0;
+        while (coolImg[num].fillAmount > 0)
+        {
+            time += Time.fixedDeltaTime;//fixedupdate¸¦ ½ÇÇàÇÏ´Â ½Ã°£.
+            //Time.deltaTime; //updateÇÑ¹ø ½ÃÇàÇÒ¶§¸¶´Ù °É¸®´Â ½Ã°£
+            val = skillCooltime[num] - time;
+            coolImg[num].fillAmount = val / skillCooltime[num];
+            yield return new WaitForFixedUpdate();
+        }
+        coolCor[num] = null;
+    }
+
+    //ÄğÅ¸ÀÓÀÌ 1ÃÊ¶ó°í ÇÒ‹š
+    //¾øÀ¸¸é 0 ÀÖÀ¸¸é 1ÀÌ°í
+    //ÄğÅ¸ÀÓµµ 1ÀÌ¸é
+    //±×³É ³»°¡ ¹º°¡ ÄğÅ¸ÀÓÀÌ Áõ°¡~~~ÇÏ´Ù°¡ 1ÀÌ µÇ¸é ³¡
+
+    //float time = 0;
+    //time +=Time.fixedDeltaTime;//0.02
+    //fillamount = time;
+
+    //ÄğÅ¸ÀÓÀÌ 2ÃÊ¶ó°í ÇÒ‹š
+    //¾øÀ¸¸é 0ÀÌ°í ÀÌ°Íµµ ´Ù Â÷¸é 1
+
+    //ÄğÅ¸ÀÓ 2: fillamountÀÇ ³¡Àº 1  = ½ÇÁ¦ Áö³­½Ã°£ 1 : fillamountÀÇ ÇöÀç °ªÀº X
+
+
+    //float time = 0;
+    //time +=Time.fixedDeltaTime;//0.02
+    //fillamount = time / ÄğÅ¸ÀÓ;
+
+    //ÄğÅ¸ÀÓ : 1 = time : X    == 0.5
+
+    //(1 x1 )/2 == 0.5
+}

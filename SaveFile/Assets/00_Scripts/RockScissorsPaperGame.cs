@@ -5,32 +5,32 @@ using UnityEngine.UI;
 
 public class RockScissorsPaperGame : MonoBehaviour
 {
-    string[] rspString = new string[] { "ë³´", "ê°€ìœ„", "ë°”ìœ„"};
+    string[] rspString = new string[] { "º¸", "°¡À§", "¹ÙÀ§"};
     
-    public Image comImg;
-    public Sprite[] RSPSprites;
+    public Image comImg; //ÄÄÇ»ÅÍÃøÀÇ °¡À§¹ÙÀ§º¸ ±×¸²À» Ãâ·ÂÇÒ.. ¾×ÀÚ°°Àº... °Í..
+    public Sprite[] RSPSprites; //½ÇÁ¦ °¡À§¹ÙÀ§º¸ ±×¸² ¸®¼Ò½º
     
     public Text text;
-    int comnum = 0;
-    bool isrepeat = false;
+    int comnum = 0; //ÄÄÇ»ÅÍ°¡ ¼±ÅÃÇÑ °¡À§¹ÙÀ§º¸..¼ıÀÚÇ¥Çö
+    bool isrepeat = false; 
 
-    public GameObject Button;
+    public GameObject Button; //Àç½ÃÀÛ ¹öÆ°
 
-    Coroutine cor = null;
+    Coroutine cor = null; 
     void Start()
     {        
         GameStart();
     }
-    public void GameStart()
+    public void GameStart() //Àç½ÃÀÛ¹öÆ°¿¡µµ ´Ş·ÁÀÖ´Â ±â´É.
     {
-        text.text = "ê°€ìœ„ë°”ìœ„ë³´ë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”";
+        text.text = "°¡À§¹ÙÀ§º¸¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä";
         isrepeat = true;
         if (cor == null)
         {
             cor = StartCoroutine(ImgShuffle());
         }
 
-        Button.SetActive(false);
+        Button.SetActive(false);//Àç½ÃÀÛ ¹öÆ°À» ´­·¶´Ù¸é Àç½ÃÀÛ ¹öÆ° ºñÈ°¼ºÈ­
     }
     public void PlayerChoose(int playernum)
     {
@@ -41,7 +41,7 @@ public class RockScissorsPaperGame : MonoBehaviour
         
         if (playernum== comnum)
         {
-            text.text = rspString[playernum].ToString()+"ë¥¼ ì„ íƒí•˜ì—¬ ë¹„ê²¼ìŠµë‹ˆë‹¤";
+            text.text = rspString[playernum].ToString()+"¸¦ ¼±ÅÃÇÏ¿© ºñ°å½À´Ï´Ù";
         }
         else
         {
@@ -49,35 +49,62 @@ public class RockScissorsPaperGame : MonoBehaviour
             {
                 if (playernum == 2 && comnum == 0)
                 {
-                    text.text = rspString[playernum]+ "ë¥¼ ì„ íƒí•˜ì—¬ ì¡ŒìŠµë‹ˆë‹¤";
+                    text.text = rspString[playernum]+ "¸¦ ¼±ÅÃÇÏ¿© Á³½À´Ï´Ù";
                 }
                 else
                 {
-                    text.text = rspString[playernum] + "ë¥¼ ì„ íƒí•˜ì—¬ ì´ê²¼ìŠµë‹ˆë‹¤";
+                    text.text = rspString[playernum] + "¸¦ ¼±ÅÃÇÏ¿© ÀÌ°å½À´Ï´Ù";
                 }
             }
             else
             {
                 if (playernum == 0 && comnum == 2)
                 {
-                    text.text = rspString[playernum]+ "ë¥¼ ì„ íƒí•˜ì—¬ ì´ê²¼ìŠµë‹ˆë‹¤";
+                    text.text = rspString[playernum]+ "¸¦ ¼±ÅÃÇÏ¿© ÀÌ°å½À´Ï´Ù";
                 }
                 else
                 {
-                    text.text = rspString[playernum] + "ë¥¼ ì„ íƒí•˜ì—¬ ì¡ŒìŠµë‹ˆë‹¤";                    
+                    text.text = rspString[playernum] + "¸¦ ¼±ÅÃÇÏ¿© Á³½À´Ï´Ù";                    
                 }
             }            
         }
 
-        Button.SetActive(true);
+        Button.SetActive(true);//Àç½ÃÀÛ ¹öÆ° È°¼ºÈ­.
     }
+
+    #region ÄÚ·çÆ¾ while »ç¿ë À§Çè»ç·Ê
+    //void AAA()
+    //{
+    //    while (true)
+    //    {
+    //        if (cor == null)
+    //        {
+    //            cor = StartCoroutine(Sample());
+    //        }
+    //        comnum++;
+
+    //        if (comnum > 2)
+    //        {
+    //            comnum = 0;
+    //        }
+    //        cor = null;
+    //    }
+    //}
+
+    //IEnumerator Sample()
+    //{
+    //    yield return new WaitForSeconds(1f);
+    //    comImg.sprite = RSPSprites[comnum];
+    //}
+    #endregion
+
     IEnumerator ImgShuffle()
     {                
-        while (isrepeat/*true*/) //ê°„í˜¹ ì½”ë£¨í‹´ì„ ì •ì§€ì‹œì¼œë„ whileë¬¸ì´ ì§€ì†ë˜ëŠ” ê²½ìš°ê°€ ìˆì–´ì„œ boolì„ ë”°ë¡œì£¼ëŠ”ê²ƒì´ ì¢€ë” ì•ˆì „ã…œ
+        while (isrepeat/*true*/) //°£È¤ ÄÚ·çÆ¾À» Á¤Áö½ÃÄÑµµ while¹®ÀÌ Áö¼ÓµÇ´Â °æ¿ì°¡ ÀÖ¾î¼­ boolÀ» µû·ÎÁÖ´Â°ÍÀÌ Á»´õ ¾ÈÀü¤Ì
         {
-            comImg.sprite = RSPSprites[comnum];
-            yield return new WaitForSeconds(0.08f);
-            comnum++;
+            comImg.sprite = RSPSprites[comnum];//0
+            yield return new WaitForSeconds(0.08f); //1ÃÊ¶ó°í °¡Á¤
+            comnum++;//1
             if (comnum > 2)
             {
                 comnum = 0;
